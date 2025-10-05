@@ -8,6 +8,6 @@ namespace Complaints.Worker.Interfaces
 {
     public interface IRabbitMqConsumer
     {
-        Task ConsumeAsync(CancellationToken cancellationToken);
+        Task ConsumeAsync<T>(string queueName, Func<T, Task> onMessage, CancellationToken cancellationToken);
     }
 }

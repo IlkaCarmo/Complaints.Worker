@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace Complaints.Worker.Models
 {
@@ -24,7 +19,7 @@ namespace Complaints.Worker.Models
         public string Categories { get; set; }
 
         public DateTime Deadline { get; set; }
-
+        public List<string> AttachmentUrls { get; set; } = new();
         public DateTime CreatedAt { get; set; }
     }
 }

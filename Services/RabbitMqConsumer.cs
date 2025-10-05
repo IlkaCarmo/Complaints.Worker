@@ -24,35 +24,29 @@ namespace Complaints.Worker.Services
             _categoryProvider = categoryProvider;
         }
 
-        public async Task ConsumeAsync(CancellationToken cancellationToken)
+        public async Task ConsumeAsync<T>(string queueName, Func<T, Task> onMessage, CancellationToken cancellationToken)
         {
-
             var factory = new ConnectionFactory() { HostName = "localhost" };
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
 
-            channel.QueueDeclare(queue: "complaints", durable: false, exclusive: false, autoDelete: false, arguments: null);
+            channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += async (model, ea) =>
             {
                 var body = ea.Body.ToArray();
                 var json = Encoding.UTF8.GetString(body);
-                var complaint = JsonConvert.DeserializeObject<ComplaintDto>(json);
-                
-                complaint.Deadline = DateTime.UtcNow.AddDays(10);
-                complaint.Status = "Classificada";
+                var data = JsonConvert.DeserializeObject<T>(json);
 
-                var categorias = _categoryProvider.GetCategorias();
-                var tags = _classifier.Classify(complaint.Description, categorias);
-
-                await _repository.SaveAsync(complaint, tags);
+                if (data != null)
+                    await onMessage(data);
             };
 
-            channel.BasicConsume(queue: "complaints", autoAck: true, consumer: consumer);
+            channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
 
             while (!cancellationToken.IsCancellationRequested)
-                await Task.Delay(1000);
+                await Task.Delay(1000, cancellationToken);
         }
 
     }

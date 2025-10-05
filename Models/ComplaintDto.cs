@@ -26,5 +26,7 @@ namespace Complaints.Worker.Models
         public DateTime Deadline { get; set; }
 
         public DateTime CreatedAt { get; set; }
+        public List<string> AttachmentUrls { get; set; } = new();
+
     }
 }
