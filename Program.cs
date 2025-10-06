@@ -20,7 +20,7 @@ public class Program
                 services.AddScoped<IComplaintRepository, ComplaintRepository>();
 
                 services.AddDbContext<ComplaintsDbContext>(options =>
-                 options.UseMySql("server=localhost;database=complaintsdb;user=root;password=yourpassword",
+                 options.UseMySql("server=localhost;database=complaintsdb;user=;password=",
                  new MySqlServerVersion(new Version(8, 0, 34))));
             })
             .Build();

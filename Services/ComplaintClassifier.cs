@@ -12,6 +12,7 @@ namespace Complaints.Worker.Services
         public List<string> Classify(string texto, Dictionary<string, List<string>> categorias)
         {
             var resultado = new List<string>();
+
             var textoLower = texto.ToLower();
 
             foreach (var categoria in categorias)

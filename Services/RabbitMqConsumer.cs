@@ -32,6 +32,7 @@ namespace Complaints.Worker.Services
 
             channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
+            //cria consumidor
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += async (model, ea) =>
             {
